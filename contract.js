@@ -38,6 +38,7 @@ const initialize = () => {
   const onboardButton = document.getElementById('connectButton');
   const getAccountsButton = document.getElementById('getAccounts');
   const getAccountsResult = document.getElementById('getAccountsResult');
+  const getAccountsResultHidden = document.getElementById('getAccountsResultHidden');
   // Created check function to see if the MetaMask extension is installed
   const isMetaMaskInstalled = () => {
     // Have to check the ethereum binding on the window object to see if it's installed
@@ -70,6 +71,8 @@ const initialize = () => {
     const accounts = await ethereum.request({ method: 'eth_accounts' });
     // We take the first address in the array of addresses and display it
     getAccountsResult.innerHTML = accounts[0] || 'Not able to get accounts';
+    // To send the address to the server
+    getAccountsResultHidden.value = accounts[0];
   });
   
   // We create a new MetaMask onboarding object to use in our app

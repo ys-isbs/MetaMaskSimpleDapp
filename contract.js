@@ -36,9 +36,9 @@ const initialize = () => {
   //You will start here 
   // Basic Actions Section
   const onboardButton = document.getElementById('connectButton');
-  const getAccountsButton = document.getElementById('getAccounts');
-  const getAccountsResult = document.getElementById('getAccountsResult');
-  const getAccountsResultHidden = document.getElementById('getAccountsResultHidden');
+  // const getAccountsButton = document.getElementById('getAccounts');
+  // const getAccountsResult = document.getElementById('getAccountsResult');
+  // const getAccountsResultHidden = document.getElementById('getAccountsResultHidden');
   // Created check function to see if the MetaMask extension is installed
   const isMetaMaskInstalled = () => {
     // Have to check the ethereum binding on the window object to see if it's installed
@@ -57,7 +57,7 @@ const initialize = () => {
       onboardButton.disabled = false;
     } else {
       // If it is installed we change ourt button text
-      onboardButton.innerText = 'Connect';
+      onboardButton.innerText = 'ログイン';
       // When the button is clicked we call this fucntion to connect the users MetaMask Wallet
       onboardButton.onclick = onClickConnect;
       // The button is now disabled
@@ -66,14 +66,14 @@ const initialize = () => {
   };
 
   // Eth_Accounts-getAccountsButton
-  getAccountsButton.addEventListener('click', async () => {
-    // we use eth_accounts because it returns a list of addresses owned by us.
-    const accounts = await ethereum.request({ method: 'eth_accounts' });
-    // We take the first address in the array of addresses and display it
-    getAccountsResult.innerHTML = accounts[0] || 'Not able to get accounts';
-    // To send the address to the server
-    getAccountsResultHidden.value = accounts[0];
-  });
+  // getAccountsButton.addEventListener('click', async () => {
+  //   // we use eth_accounts because it returns a list of addresses owned by us.
+  //   const accounts = await ethereum.request({ method: 'eth_accounts' });
+  //   // We take the first address in the array of addresses and display it
+  //   getAccountsResult.innerHTML = accounts[0] || 'Not able to get accounts';
+  //   // To send the address to the server
+  //   getAccountsResultHidden.value = accounts[0];
+  // });
   
   // We create a new MetaMask onboarding object to use in our app
   const onboarding = new MetaMaskOnboarding({ forwarderOrigin });
@@ -91,10 +91,30 @@ const initialize = () => {
       // Will open the MetaMask UI
       // You should disable this button while the request is pending!
       await ethereum.request({ method: 'eth_requestAccounts' });
+      const eth_account = await onConnected();
+      sendETHAccount(eth_account);
     } catch (error) {
       console.error(error);
     }
   };
+
+  const onConnected = async () => {
+    // we use eth_accounts because it returns a list of addresses owned by us.
+    eth_accounts = await ethereum.request({ method: 'eth_accounts' });
+    return eth_accounts[0];
+  }
+
+  const sendETHAccount = (account) => {
+    console.log('submitting');
+    $.ajax({
+      type: "POST",
+      url: "//****.***/***", // FIXME this URL
+      data: { account },
+      success: function() {
+        console.log('success');
+      }
+    });
+  }
 
   MetaMaskClientCheck();
 };
